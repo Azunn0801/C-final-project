@@ -1,0 +1,44 @@
+//
+// Created by Azunn on 07/02/2025.
+//
+
+#ifndef DATATYPE_H
+#define DATATYPE_H
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
+#define MAX_LENGTH 100
+
+extern bool FileState;
+extern int choice;
+extern const char email[];
+extern const char password[];
+extern char email_in[100];
+extern char password_in[64];
+
+typedef struct Date {
+    int month, day, year;
+};
+
+typedef struct Category {
+    char CategoryId[10];
+    char CategoryName[10];
+} Category;
+
+typedef struct Product {
+    char productId[10];
+    char categoryId[10];
+    char productName[10];
+    int quantity;
+    int price;
+} Product;
+
+typedef struct Order {
+    char orderId[10];
+    char customerId[20];
+    struct Date date;
+    struct Product product;
+};
+#endif //DATATYPE_H
