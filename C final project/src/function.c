@@ -4,6 +4,7 @@
 
 Category categories[MAX_LENGTH];
 Product products[MAX_LENGTH];
+int current_menu;
 int categoryCount;
 int productCount = 0;
 const char email[] = "test@gmail.com";
@@ -66,7 +67,7 @@ void save_categories() {
 }
 
 void save_products() {
-    FILE *file = fopen("data/products.bin", "wb");
+    FILE *file = fopen("data/product.bin", "wb");
     if (file == NULL) {
         printf("Error: Cannot open product file for writing.\n");
         return;
@@ -77,6 +78,7 @@ void save_products() {
     fflush(file);
     fclose(file);
     printf("Product saved successfully.\n");
+    Sleep(2000);
 }
 
 void log_in_menu() {
@@ -132,6 +134,7 @@ void entry_menu() {
 }
 
 void category_menu() {
+    current_menu = 1;
     system("cls");
     printf("***Store Management System Using C***\n");
     printf("\n");
@@ -187,6 +190,7 @@ void category_menu() {
 }
 
 void product_menu() {
+    current_menu = 2;
     system("cls");
     printf("***Store Management System Using C***\n");
     printf("\n");
@@ -275,7 +279,7 @@ void add_category() {
     } while (strlen(newCategory.CategoryName) == 0);
     categories[categoryCount] = newCategory;
     categoryCount++;
-    return_options();
+    return_options(add_category);
 }
 
 void viewCategories() {
@@ -289,7 +293,7 @@ void viewCategories() {
         printf("| %-10s | %-10s |\n", categories[i].CategoryId, categories[i].CategoryName);
         printf("+------------+------------+\n");
     }
-    return_options();
+    return_options(viewCategories);
 }
 
 void edit_category() {
@@ -323,7 +327,7 @@ void edit_category() {
         if (choice == 1) {
             edit_category();
         } else {
-            return_options();
+            return_options(edit_category);
         }
     }
     category_menu();
@@ -381,7 +385,7 @@ void delete_category() {
     if (flag == false) {
         printf("Category not found!\n");
     }
-    return_options();
+    return_options(delete_category);
 }
 
 void categories_sort_options() {
@@ -429,7 +433,7 @@ void categories_sort_options() {
     }
     if (categoryCount <= 0) {
         printf("No category or there's only one category to sort\n");
-        return_options();
+        return_options(categories_sort_options);
     }
     else {
         categories_sort_action(SortType);
@@ -472,7 +476,7 @@ void search_categories() {
 
     searchString(categories, MAX_LENGTH, keyword);
 
-    return_options();
+    return_options(search_categories);
 
 }
 
@@ -495,10 +499,11 @@ void searchString(struct Category arr[], int n, char keyword[]) {
     }
 }
 
-void return_options() {
+void return_options(void (*callback)()) {
     printf("\n=====================================\n");
     printf("[0] Exit\n");
     printf("[99] Return\n");
+    printf("[1] Perform this action again\n");
     printf("%20s", "Enter The Choice: ");
     scanf("%d", &choice);
     fflush(stdin);
@@ -506,8 +511,17 @@ void return_options() {
     switch (choice) {
         case 0:
             exit_program();
+        break;
         case 99:
-            category_menu();
+            if (current_menu == 1) {
+                category_menu();
+            }
+            else {
+                product_menu();
+            }
+        break;
+        case 1:
+            callback();
         default:
             printf("Invalid Choice, try again!\n");
             printf("%20s", "Enter The Choice: ");
@@ -562,7 +576,7 @@ void add_product() {
 
     if (!categoryExists) {
         printf("Error: Category ID does not exist!\n");
-        return;
+        return_options(add_product);
     }
     do {
         printf("Enter Product Name (Max 9 chars): ");
@@ -596,7 +610,7 @@ void add_product() {
     productCount++;
 
     printf("Product added successfully!\n");
-    return_options();
+    return_options(add_product);
 }
 
 void view_products() {
@@ -612,7 +626,7 @@ void view_products() {
                products[i].quantity, products[i].price);
         printf("+------------+------------+------------+----------+--------+\n");
     }
-    return_options();
+    return_options(view_products);
 }
 
 void edit_products() {
@@ -650,7 +664,7 @@ void edit_products() {
         if (choice == 1) {
             edit_products();
         } else {
-            return_options();
+            return_options(edit_products);
         }
     }
     product_menu();
@@ -767,7 +781,7 @@ void delete_products() {
     if (flag == false) {
         printf("Product not found!\n");
     }
-    return_options();
+    return_options(delete_products);
 }
 
 void search_products() {
@@ -809,7 +823,7 @@ void search_products() {
     }
 
     printf("================================================================\n");
-    return_options();
+    return_options(search_products);
 }
 
 void products_sort() {
@@ -836,7 +850,7 @@ void products_sort() {
             products_sort_action(2);
         break;
         case 0:
-            return_options();
+            return_options(products_sort);
         break;
         default:
             printf("Invalid choice! Try again!\n");
