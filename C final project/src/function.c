@@ -537,16 +537,12 @@ void add_product() {
             printf("Error: Product ID cannot be empty!\n");
         }
     } while (strlen(newProduct.productId) == 0);
-
-    // Check for duplicate Product ID
     for (int i = 0; i < productCount; i++) {
         if (strcmp(newProduct.productId, products[i].productId) == 0) {
             printf("Error: Product ID already exists!\n");
             return;
         }
     }
-
-    // Get Category ID with validation
     do {
         printf("Enter Category ID (Max 9 chars): ");
         fgets(newProduct.categoryId, sizeof(newProduct.categoryId), stdin);
@@ -556,8 +552,6 @@ void add_product() {
             printf("Error: Category ID cannot be empty!\n");
         }
     } while (strlen(newProduct.categoryId) == 0);
-
-    // Validate if Category ID exists
     bool categoryExists = false;
     for (int i = 0; i < categoryCount; i++) {
         if (strcmp(newProduct.categoryId, categories[i].CategoryId) == 0) {
@@ -570,8 +564,6 @@ void add_product() {
         printf("Error: Category ID does not exist!\n");
         return;
     }
-
-    // Get Product Name with validation
     do {
         printf("Enter Product Name (Max 9 chars): ");
         fgets(newProduct.productName, sizeof(newProduct.productName), stdin);
@@ -581,8 +573,6 @@ void add_product() {
             printf("Error: Product Name cannot be empty!\n");
         }
     } while (strlen(newProduct.productName) == 0);
-
-    // Get Quantity with validation
     do {
         printf("Enter Quantity: ");
         scanf("%d", &newProduct.quantity);
@@ -592,7 +582,6 @@ void add_product() {
             printf("Error: Quantity must be greater than 0!\n");
         }
     } while (newProduct.quantity <= 0);
-
     do {
         printf("Enter Price: ");
         scanf("%d", &newProduct.price);
@@ -671,8 +660,6 @@ void change_product_details(int index) {
     char newName[10];
     char newCategoryId[10];
     int newQuantity, newPrice;
-
-    // Change Product Name
     do {
         printf("Enter new Product Name (Max 9 chars): ");
         fgets(newName, sizeof(newName), stdin);
@@ -683,8 +670,6 @@ void change_product_details(int index) {
         }
     } while (strlen(newName) == 0);
     strcpy(products[index].productName, newName);
-
-    // Change CategoryId with Validation
     do {
         printf("Enter new Category ID (Max 9 chars): ");
         fgets(newCategoryId, sizeof(newCategoryId), stdin);
@@ -694,8 +679,6 @@ void change_product_details(int index) {
             printf("Error: Category ID cannot be empty!\n");
             continue;
         }
-
-        // Check if CategoryId exists
         bool categoryExists = false;
         for (int i = 0; i < categoryCount; i++) {
             if (strcmp(newCategoryId, categories[i].CategoryId) == 0) {
@@ -703,8 +686,6 @@ void change_product_details(int index) {
                 break;
             }
         }
-
-        // If not exists, ask to create new or retry
         if (!categoryExists) {
             printf("Category ID not found!\n");
             printf("[1] Add new Category\n");
@@ -714,7 +695,7 @@ void change_product_details(int index) {
             fflush(stdin);
 
             if (choice == 1) {
-                add_category();  // Call your existing add_category() function
+                add_category();
             } else if (choice == 2) {
                 continue;
             }
@@ -723,8 +704,6 @@ void change_product_details(int index) {
             break;
         }
     } while (true);
-
-    // Change Quantity
     do {
         printf("Enter new Quantity (Positive number): ");
         scanf("%d", &newQuantity);
@@ -735,8 +714,6 @@ void change_product_details(int index) {
         }
     } while (newQuantity < 0);
     products[index].quantity = newQuantity;
-
-    // Change Price
     do {
         printf("Enter new Price (Positive number): ");
         scanf("%d", &newPrice);
@@ -778,7 +755,6 @@ void delete_products() {
             }
 
             flag = true;
-            // Shift products up to remove the deleted one
             for (int j = i; j < productCount - 1; j++) {
                 products[j] = products[j + 1];
             }
@@ -804,19 +780,14 @@ void search_products() {
     printf("Enter keyword to search for Product Name: ");
     fgets(keyword, sizeof(keyword), stdin);
     keyword[strcspn(keyword, "\n")] = 0;
-
-    // Convert keyword to lowercase for case-insensitive search
     for (int i = 0; keyword[i]; i++) {
         keyword[i] = tolower(keyword[i]);
     }
-
     printf("\n======================== SEARCH RESULTS ========================\n");
     printf("+------------+------------+------------+----------+--------+\n");
     printf("| ProductID  | CategoryID | ProductName | Quantity | Price  |\n");
     printf("+------------+------------+------------+----------+--------+\n");
-
     for (int i = 0; i < productCount; i++) {
-        // Convert ProductName to lowercase for comparison
         char lowerName[sizeof(products[i].productName)];
         strcpy(lowerName, products[i].productName);
         for (int j = 0; lowerName[j]; j++) {
@@ -824,7 +795,6 @@ void search_products() {
         }
 
         if (strstr(lowerName, keyword) != NULL) {
-            // Display product if keyword is found in ProductName
             printf("| %-10s | %-10s | %-10s | %-8d | %-6d |\n",
                    products[i].productId, products[i].categoryId, products[i].productName,
                    products[i].quantity, products[i].price);
@@ -881,13 +851,11 @@ void products_sort_action(int order) {
     Product temp;
     for (int i = 0; i < productCount; i++) {
         for (int j = 0; j < productCount - i - 1; j++) {
-            // Ascending order
             if (order == 1 && products[j].price > products[j + 1].price) {
                 temp = products[j];
                 products[j] = products[j + 1];
                 products[j + 1] = temp;
             }
-            // Descending order
             if (order == 2 && products[j].price < products[j + 1].price) {
                 temp = products[j];
                 products[j] = products[j + 1];
